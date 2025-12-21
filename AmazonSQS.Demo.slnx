@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Consumer.API/Consumer.API.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Consumer.Consumer/Consumer.Consumer.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Messages/Messages.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+</Solution>
