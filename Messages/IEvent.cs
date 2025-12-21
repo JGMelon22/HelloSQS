@@ -1,6 +1,5 @@
 ﻿namespace Messages;
 
-public class Class1
+public interface IEvent
 {
-
 }
