@@ -43,11 +43,17 @@ public class OrdersController : ControllerBase
             GetQueueUrlResponse response = await _sqsClient.GetQueueUrlAsync(queueName);
             return response.QueueUrl;
         }
-        catch (QueueDoesNotExistException)
+        catch (QueueDoesNotExistException ex)
         {
-            _logger.LogWarning("Queue {queueName} doesn't exist. Creating...", queueName);
+            _logger.LogWarning(ex, "Queue {queueName} doesn't exist. Creating...", queueName);
             CreateQueueResponse response = await _sqsClient.CreateQueueAsync(queueName);
             return response.QueueUrl;
+        }
+
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get or create queue {queueName}", queueName);
+            throw;
         }
     }
 }
