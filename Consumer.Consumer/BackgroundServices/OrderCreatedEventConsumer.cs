@@ -1,7 +1,5 @@
-﻿
-using Amazon.SQS;
+﻿using Amazon.SQS;
 using Amazon.SQS.Model;
-using Microsoft.Extensions.Validation;
 
 namespace Consumer.Consumer.BackgroundServices;
 
