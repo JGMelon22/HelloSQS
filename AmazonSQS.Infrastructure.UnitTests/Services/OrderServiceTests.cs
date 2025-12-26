@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace AmazonSQS.Infrastructure.UnitTests.Infrastructure.Services;
+namespace AmazonSQS.Infrastructure.UnitTests.Services;
 
 public class OrderServiceTests
 {
