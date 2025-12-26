@@ -17,4 +17,7 @@
     </Project>
   </Folder>
   <Folder Name="/tests/" />
+  <Folder Name="/tests/UnitTests/">
+    <Project Path="AmazonSQS.Infrastructure.UnitTests/AmazonSQS.Infrastructure.UnitTests.csproj" Id="b03bb315-a457-4d2f-876d-f614370a5e77" />
+  </Folder>
 </Solution>
