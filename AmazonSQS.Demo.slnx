@@ -1,20 +1,12 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-    <Platform Name="x64" />
-  </Configurations>
   <Folder Name="/src/">
-    <Project Path="AmazonSQS.Core/AmazonSQS.Core.csproj" Id="639b4c46-0fca-4b7e-8ec6-7d8af3194734" />
-    <Project Path="AmazonSQS.Infrastructure/AmazonSQS.Infrastructure.csproj" Id="1369c9c1-9fa5-49b0-9045-07cf2c83e9ad" />
-    <Project Path="Consumer.API/Producer.API.csproj">
-      <Platform Solution="*|x64" Project="x64" />
-    </Project>
-    <Project Path="Consumer.Consumer/Consumer.API.csproj">
-      <Platform Solution="*|x64" Project="x64" />
-    </Project>
+    <Project Path="src/AmazonSQS.Core/AmazonSQS.Core.csproj" />
+    <Project Path="src/AmazonSQS.Infrastructure/AmazonSQS.Infrastructure.csproj" />
+    <Project Path="src/Consumer.API/Producer.API.csproj" />
+    <Project Path="src/Consumer.Consumer/Consumer.API.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/UnitTests/">
-    <Project Path="AmazonSQS.Infrastructure.UnitTests/AmazonSQS.Infrastructure.UnitTests.csproj" Id="b03bb315-a457-4d2f-876d-f614370a5e77" />
+    <Project Path="tests/UnitTests/AmazonSQS.Infrastructure.UnitTests/AmazonSQS.Infrastructure.UnitTests.csproj" />
   </Folder>
 </Solution>

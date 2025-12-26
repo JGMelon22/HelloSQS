@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AmazonSQS.Core\AmazonSQS.Core.csproj" />
-    <ProjectReference Include="..\AmazonSQS.Infrastructure\AmazonSQS.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\src\AmazonSQS.Core\AmazonSQS.Core.csproj" />
+    <ProjectReference Include="..\..\..\src\AmazonSQS.Infrastructure\AmazonSQS.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
