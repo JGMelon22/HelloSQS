@@ -27,7 +27,8 @@ public class OrderCreatedEventConsumer : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             ReceiveMessageResponse response = await _sqsService.ReceiveMessageAsync(receivedRequest);
-            if (response.Messages.Count > 0)
+
+            while (response.Messages.Count > 0)
             {
                 foreach (Message message in response.Messages)
                 {
