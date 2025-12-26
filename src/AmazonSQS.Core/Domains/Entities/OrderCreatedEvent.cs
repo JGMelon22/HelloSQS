@@ -1,14 +1,14 @@
-﻿namespace Messages;
+﻿namespace AmazonSQS.Core.Domains.Entities;
 
-public class OrderCreatedEvent : IEvent
+public class OrderCreatedEvent
 {
     public Guid OrderId { get; set; }
     public Guid CustomerId { get; set; }
     public DateTime CreatedDate { get; set; }
 
-    public OrderCreatedEvent(Guid orderId, Guid customerId)
+    public OrderCreatedEvent(Guid customerId)
     {
-        OrderId = orderId;
+        OrderId = Guid.CreateVersion7();
         CustomerId = customerId;
         CreatedDate = DateTime.UtcNow;
     }

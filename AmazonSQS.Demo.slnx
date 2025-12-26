@@ -1,15 +1,12 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-    <Platform Name="x64" />
-  </Configurations>
-  <Project Path="Consumer.API/Consumer.API.csproj">
-    <Platform Solution="*|x64" Project="x64" />
-  </Project>
-  <Project Path="Consumer.Consumer/Consumer.Consumer.csproj">
-    <Platform Solution="*|x64" Project="x64" />
-  </Project>
-  <Project Path="Messages/Messages.csproj">
-    <Platform Solution="*|x64" Project="x64" />
-  </Project>
+  <Folder Name="/src/">
+    <Project Path="src/AmazonSQS.Core/AmazonSQS.Core.csproj" />
+    <Project Path="src/AmazonSQS.Infrastructure/AmazonSQS.Infrastructure.csproj" />
+    <Project Path="src/Consumer.API/Producer.API.csproj" />
+    <Project Path="src/Consumer.Consumer/Consumer.API.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/UnitTests/">
+    <Project Path="tests/UnitTests/AmazonSQS.Infrastructure.UnitTests/AmazonSQS.Infrastructure.UnitTests.csproj" />
+  </Folder>
 </Solution>

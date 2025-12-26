@@ -1,5 +1,8 @@
 using Amazon.SQS;
-using Consumer.Consumer.BackgroundServices;
+using AmazonSQS.Infrastructure.Configuration;
+using AmazonSQS.Infrastructure.Interfaces.Services;
+using AmazonSQS.Infrastructure.Services;
+using Producer.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHostedService<OrderCreatedEventConsumer>();
-
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 builder.Services.AddAWSService<IAmazonSQS>();
+
+builder.Services.Configure<SqsOptions>(
+    builder.Configuration.GetSection(SqsOptions.SqsSettings));
+
+builder.Services.AddScoped<ISqsMessagePublisher, SqsMessagePublisher>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
