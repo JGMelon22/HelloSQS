@@ -1,6 +1,7 @@
 using Amazon.SQS;
 using AmazonSQS.Infrastructure.Configuration;
 using AmazonSQS.Infrastructure.Interfaces.Services;
+using AmazonSQS.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.Configure<SqsOptions>(
     builder.Configuration.GetSection(SqsOptions.SqsSettings));
 
 builder.Services.AddScoped<ISqsMessagePublisher, ISqsMessagePublisher>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 
