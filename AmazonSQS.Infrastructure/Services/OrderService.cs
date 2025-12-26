@@ -1,4 +1,5 @@
-﻿using AmazonSQS.Core.Domains.DTOs.Requests;
+﻿using Amazon.SQS.Model;
+using AmazonSQS.Core.Domains.DTOs.Requests;
 using AmazonSQS.Core.Domains.Entities;
 using AmazonSQS.Core.Domains.Mappings;
 using AmazonSQS.Infrastructure.Configuration;
@@ -16,7 +17,7 @@ public class OrderService(
 {
     private readonly SqsOptions _sqsOptions = sqsOptions.Value;
 
-    public async Task<Guid> CreateOrderAsync(OrderCreatedEventRequest request, CancellationToken cancellationToken = default)
+    public async Task<SendMessageResponse> CreateOrderAsync(OrderCreatedEventRequest request, CancellationToken cancellationToken = default)
     {
         logger.LogInformation(
             "Creating order for customer {customerId}",
@@ -25,7 +26,7 @@ public class OrderService(
 
         OrderCreatedEvent @event = request.ToDomain();
 
-        await sqsMessagePublisher.PublishAsync(@event, _sqsOptions.OrderCreatedQueueUrl, cancellationToken);
+        SendMessageResponse sendMessageResponse = await sqsMessagePublisher.PublishAsync(@event, _sqsOptions.OrderCreatedQueueUrl, cancellationToken);
 
         logger.LogInformation(
             "Order {orderId} created successfully for customer {customerId}",
@@ -33,6 +34,6 @@ public class OrderService(
             @event.CustomerId
         );
 
-        return @event.OrderId;
+        return sendMessageResponse;
     }
 }

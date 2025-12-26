@@ -8,7 +8,7 @@ namespace AmazonSQS.Infrastructure.Services;
 
 public class SqsMessagePublisher(IAmazonSQS amazonSQS, ILogger<SqsMessagePublisher> logger) : ISqsMessagePublisher
 {
-    public async Task PublishAsync<T>(T message, string queueUrl, CancellationToken cancellationToken = default) where T : class
+    public async Task<SendMessageResponse> PublishAsync<T>(T message, string queueUrl, CancellationToken cancellationToken = default) where T : class
     {
         try
         {
@@ -22,13 +22,15 @@ public class SqsMessagePublisher(IAmazonSQS amazonSQS, ILogger<SqsMessagePublish
 
             logger.LogInformation("Publishing message to queue {queueUrl}. Message type: {messageType}", queueUrl, typeof(T).Name);
 
-            SendMessageResponse response = await amazonSQS.SendMessageAsync(sendMessage);
+            SendMessageResponse response = await amazonSQS.SendMessageAsync(sendMessage, cancellationToken);
 
             logger.LogInformation(
                "Message published successfully. MessageId: {messageId}, QueueUrl: {queueUrl}",
                response.MessageId,
                queueUrl
            );
+
+            return response;
         }
         catch (AmazonSQSException ex)
         {

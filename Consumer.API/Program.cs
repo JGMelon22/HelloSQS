@@ -2,6 +2,7 @@ using Amazon.SQS;
 using AmazonSQS.Infrastructure.Configuration;
 using AmazonSQS.Infrastructure.Interfaces.Services;
 using AmazonSQS.Infrastructure.Services;
+using Producer.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,11 @@ builder.Services.AddAWSService<IAmazonSQS>();
 builder.Services.Configure<SqsOptions>(
     builder.Configuration.GetSection(SqsOptions.SqsSettings));
 
-builder.Services.AddScoped<ISqsMessagePublisher, ISqsMessagePublisher>();
+builder.Services.AddScoped<ISqsMessagePublisher, SqsMessagePublisher>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
