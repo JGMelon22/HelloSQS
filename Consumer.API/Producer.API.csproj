@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AmazonSQS.Infrastructure\AmazonSQS.Infrastructure.csproj" />
-    <ProjectReference Include="..\Messages\Messages.csproj" />
   </ItemGroup>
 
 </Project>

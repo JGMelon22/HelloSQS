@@ -12,9 +12,6 @@
     <Project Path="Consumer.Consumer/Consumer.API.csproj">
       <Platform Solution="*|x64" Project="x64" />
     </Project>
-    <Project Path="Messages/Messages.csproj">
-      <Platform Solution="*|x64" Project="x64" />
-    </Project>
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/UnitTests/">
