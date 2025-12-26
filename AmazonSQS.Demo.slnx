@@ -5,6 +5,7 @@
   </Configurations>
   <Folder Name="/src/">
     <Project Path="AmazonSQS.Core/AmazonSQS.Core.csproj" Id="639b4c46-0fca-4b7e-8ec6-7d8af3194734" />
+    <Project Path="AmazonSQS.Infrastructure/AmazonSQS.Infrastructure.csproj" Id="1369c9c1-9fa5-49b0-9045-07cf2c83e9ad" />
     <Project Path="Consumer.API/Producer.API.csproj">
       <Platform Solution="*|x64" Project="x64" />
     </Project>
