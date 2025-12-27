@@ -2,8 +2,8 @@
   <Folder Name="/src/">
     <Project Path="src/AmazonSQS.Core/AmazonSQS.Core.csproj" />
     <Project Path="src/AmazonSQS.Infrastructure/AmazonSQS.Infrastructure.csproj" />
-    <Project Path="src/Consumer.API/Producer.API.csproj" />
-    <Project Path="src/Consumer.Consumer/Consumer.API.csproj" />
+    <Project Path="src/Consumer.API/Consumer.API.csproj" />
+    <Project Path="src/Producer.API/Producer.API.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/UnitTests/">
