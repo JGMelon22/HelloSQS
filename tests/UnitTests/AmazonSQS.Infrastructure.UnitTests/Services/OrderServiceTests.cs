@@ -61,16 +61,16 @@ public class OrderServiceTests
     }
 
     [Test]
-    public async Task Should_ThrowException_When_PublishAsyncFail()
+    public void Should_ThrowException_When_PublishAsyncFail()
     {
         // Arrange
         OrderCreatedEventRequest request = new(CustomerId: Guid.Parse("019b5c24-2f93-7c69-8295-ea48caa06069"));
 
-        AmazonSQSException amazonSQSException = new("Failed to publish message to SQS");
+        AmazonSQSException amazonSqsException = new("Failed to publish message to SQS");
 
         _sqsMessagePublisher
             .PublishAsync(Arg.Any<OrderCreatedEvent>(), _sqsOptions.Value.OrderCreatedQueueUrl)
-            .Throws(amazonSQSException);
+            .Throws(amazonSqsException);
 
         //Act and Assert
         AmazonSQSException exception = Assert.ThrowsAsync<AmazonSQSException>(async () => await _sut.CreateOrderAsync(request));
