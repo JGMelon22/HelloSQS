@@ -17,7 +17,8 @@ public class OrderService(
 {
     private readonly SqsOptions _sqsOptions = sqsOptions.Value;
 
-    public async Task<SendMessageResponse> CreateOrderAsync(OrderCreatedEventRequest request, CancellationToken cancellationToken = default)
+    public async Task<SendMessageResponse> CreateOrderAsync(OrderCreatedEventRequest request,
+        CancellationToken cancellationToken = default)
     {
         logger.LogInformation(
             "Creating order for customer {customerId}",
@@ -26,12 +27,33 @@ public class OrderService(
 
         OrderCreatedEvent @event = request.ToDomain();
 
-        SendMessageResponse sendMessageResponse = await sqsMessagePublisher.PublishAsync(@event, _sqsOptions.OrderCreatedQueueUrl, cancellationToken);
+        SendMessageResponse sendMessageResponse =
+            await sqsMessagePublisher.PublishAsync(@event, _sqsOptions.OrderCreatedQueueUrl, cancellationToken);
 
         logger.LogInformation(
             "Order {orderId} created successfully for customer {customerId}",
             @event.OrderId,
             @event.CustomerId
+        );
+
+        return sendMessageResponse;
+    }
+
+    public async Task<IReadOnlyCollection<SendMessageBatchResponse>> CreateOrderBatchAsync(
+        ICollection<OrderCreatedEventRequest> request,
+        CancellationToken cancellationToken = default)
+    {
+        logger.LogInformation("Creating batch of {orderCount} orders",
+            request.Count);
+
+        IEnumerable<OrderCreatedEvent> @event = request.ToDomain();
+
+        IReadOnlyCollection<SendMessageBatchResponse> sendMessageResponse =
+            await sqsMessagePublisher.PublishBatchAsync(@event, _sqsOptions.OrderCreatedQueueUrl, cancellationToken);
+
+        logger.LogInformation(
+            "Batch processed: {successCount}",
+            sendMessageResponse.Sum(s => s.Successful.Count)
         );
 
         return sendMessageResponse;

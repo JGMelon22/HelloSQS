@@ -35,7 +35,7 @@ public class OrderServiceTests
     }
 
     [Test]
-    public async Task Should_ShouldPublishMessageAndReturnResponse_When_CreateOrderAsync()
+    public async Task Should_PublishMessageAndReturnResponse_When_CreateOrderAsync()
     {
         // Arrange
         OrderCreatedEventRequest request = new(CustomerId: Guid.Parse("019b5bf8-2e08-7e9d-b671-56508fc6298b"));

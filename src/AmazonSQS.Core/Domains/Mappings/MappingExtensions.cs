@@ -9,6 +9,11 @@ public static class MappingExtensions
     public static OrderCreatedEvent ToDomain(this OrderCreatedEventRequest orderCreatedEvent)
         => new(customerId: orderCreatedEvent.CustomerId);
 
+    public static ICollection<OrderCreatedEvent> ToDomain(this ICollection<OrderCreatedEventRequest> orderCreatedEvents)
+        => orderCreatedEvents
+            .Select(e => e.ToDomain())
+            .ToList();
+
     public static OrderCreatedEventResponse ToResponse(this OrderCreatedEvent orderCreatedEvent)
         => new()
         {

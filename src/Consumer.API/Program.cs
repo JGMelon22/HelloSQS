@@ -1,6 +1,6 @@
 using Amazon.SQS;
+using AmazonSQS.Infrastructure.BackgroundServices;
 using AmazonSQS.Infrastructure.Configuration;
-using Consumer.Consumer.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
