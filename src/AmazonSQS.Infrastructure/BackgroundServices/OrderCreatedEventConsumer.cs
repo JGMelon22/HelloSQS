@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Consumer.Consumer.BackgroundServices;
+namespace AmazonSQS.Infrastructure.BackgroundServices;
 
 public class OrderCreatedEventConsumer(
     ILogger<OrderCreatedEventConsumer> logger,
