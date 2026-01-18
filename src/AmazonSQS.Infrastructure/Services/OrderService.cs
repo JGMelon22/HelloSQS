@@ -21,7 +21,7 @@ public class OrderService(
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation(
-            "Creating order for customer {customerId}",
+            "Creating order for customer {CustomerId}",
             request.CustomerId
         );
 
@@ -31,7 +31,7 @@ public class OrderService(
             await sqsMessagePublisher.PublishAsync(@event, _sqsOptions.OrderCreatedQueueUrl, cancellationToken);
 
         logger.LogInformation(
-            "Order {orderId} created successfully for customer {customerId}",
+            "Order {orderId} created successfully for customer {CustomerId}",
             @event.OrderId,
             @event.CustomerId
         );
@@ -43,7 +43,7 @@ public class OrderService(
         ICollection<OrderCreatedEventRequest> request,
         CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Creating batch of {orderCount} orders",
+        logger.LogInformation("Creating batch of {OrderCount} orders",
             request.Count);
 
         IEnumerable<OrderCreatedEvent> @event = request.ToDomain();
@@ -52,7 +52,7 @@ public class OrderService(
             await sqsMessagePublisher.PublishBatchAsync(@event, _sqsOptions.OrderCreatedQueueUrl, cancellationToken);
 
         logger.LogInformation(
-            "Batch processed: {successCount}",
+            "Batch processed: {SuccessCount}",
             sendMessageResponse.Sum(s => s.Successful.Count)
         );
 
