@@ -1,4 +1,5 @@
-﻿using Amazon.SQS;
+﻿using System.Collections.ObjectModel;
+using Amazon.SQS;
 using Amazon.SQS.Model;
 using AmazonSQS.Infrastructure.Interfaces.Services;
 using Microsoft.Extensions.Logging;
@@ -8,22 +9,35 @@ namespace AmazonSQS.Infrastructure.Services;
 
 public class SqsMessagePublisher(IAmazonSQS amazonSqs, ILogger<SqsMessagePublisher> logger) : ISqsMessagePublisher
 {
-    public async Task<SendMessageResponse> PublishAsync<T>(T message, string queueUrl,
+    public async Task<SendMessageResponse?> PublishAsync<T>(T message, string queueUrl,
         CancellationToken cancellationToken = default) where T : class
     {
+        string messageBody;
+
         try
         {
-            string messageBody = JsonSerializer.Serialize(message);
+            messageBody = JsonSerializer.Serialize(message);
+        }
+        catch (JsonException ex)
+        {
+            logger.LogError(ex,
+                "Failed to serialize message of type {MessageType}",
+                typeof(T).Name
+            );
+            return null;
+        }
 
-            SendMessageRequest sendMessage = new()
-            {
-                QueueUrl = queueUrl,
-                MessageBody = messageBody
-            };
+        SendMessageRequest sendMessage = new()
+        {
+            QueueUrl = queueUrl,
+            MessageBody = messageBody
+        };
 
-            logger.LogInformation("Publishing message to queue {QueueUrl}. Message type: {MessageType}", queueUrl,
-                typeof(T).Name);
+        logger.LogInformation("Publishing message to queue {QueueUrl}. Message type: {MessageType}",
+            queueUrl, typeof(T).Name);
 
+        try
+        {
             SendMessageResponse response = await amazonSqs.SendMessageAsync(sendMessage, cancellationToken);
 
             logger.LogInformation(
@@ -41,13 +55,7 @@ public class SqsMessagePublisher(IAmazonSQS amazonSqs, ILogger<SqsMessagePublish
                 queueUrl,
                 ex.ErrorCode
             );
-        }
-        catch (JsonException ex)
-        {
-            logger.LogError(ex,
-                "Failed to serialize message of type {MessageType}",
-                typeof(T).Name
-            );
+            return null;
         }
         catch (Exception ex)
         {
@@ -55,6 +63,7 @@ public class SqsMessagePublisher(IAmazonSQS amazonSqs, ILogger<SqsMessagePublish
                 "Unexpected error while publishing message to queue {QueueUrl}",
                 queueUrl
             );
+            return null;
         }
     }
 
@@ -64,13 +73,15 @@ public class SqsMessagePublisher(IAmazonSQS amazonSqs, ILogger<SqsMessagePublish
         CancellationToken cancellationToken = default)
         where T : class
     {
-        try
-        {
-            List<SendMessageBatchResponse> responses = [];
+        List<SendMessageBatchResponse> responses = [];
 
-            foreach (T[] batch in messages.Chunk(10))
+        foreach (T[] batch in messages.Chunk(10))
+        {
+            List<SendMessageBatchRequestEntry> entries;
+
+            try
             {
-                List<SendMessageBatchRequestEntry> entries = batch
+                entries = batch
                     .Index()
                     .Select(message => new SendMessageBatchRequestEntry
                     {
@@ -78,58 +89,64 @@ public class SqsMessagePublisher(IAmazonSQS amazonSqs, ILogger<SqsMessagePublish
                         MessageBody = JsonSerializer.Serialize(message.Item)
                     })
                     .ToList();
-
-                SendMessageBatchRequest request = new()
-                {
-                    QueueUrl = queueUrl,
-                    Entries = entries
-                };
-
-                logger.LogInformation(
-                    "Publishing batch of {count} messages to queue {QueueUrl}",
-                    entries.Count,
-                    queueUrl
+            }
+            catch (JsonException ex)
+            {
+                logger.LogError(ex,
+                    "Failed to serialize messages of type {MessageType}",
+                    typeof(T).Name
                 );
-
-                SendMessageBatchResponse response = await amazonSqs.SendMessageBatchAsync(request, cancellationToken);
-                responses.Add(response);
-
-                if (response.Failed != null && response.Failed.Count > 0)
-                {
-                    logger.LogWarning(
-                        "{failedCount} messages failed to publish to queue {QueueUrl}",
-                        response.Failed.Count,
-                        queueUrl
-                    );
-                }
+                return ReadOnlyCollection<SendMessageBatchResponse>.Empty;
             }
 
-            return responses;
-        }
-        catch (AmazonSQSException ex)
-        {
-            logger.LogError(ex,
-                "AWS SQS error while publishing batch to queue {QueueUrl}. Error Code: {errorCode}",
-                queueUrl,
-                ex.ErrorCode
-            );
-            return null;
-        }
-        catch (JsonException ex)
-        {
-            logger.LogError(ex,
-                "Failed to serialize messages of type {MessageType}",
-                typeof(T).Name
-            );
-            throw;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex,
-                "Unexpected error while publishing batch to queue {QueueUrl}",
+            SendMessageBatchRequest request = new()
+            {
+                QueueUrl = queueUrl,
+                Entries = entries
+            };
+
+            logger.LogInformation(
+                "Publishing batch of {count} messages to queue {QueueUrl}",
+                entries.Count,
                 queueUrl
             );
-            throw;
+
+            SendMessageBatchResponse response;
+
+            try
+            {
+                response = await amazonSqs.SendMessageBatchAsync(request, cancellationToken);
+            }
+            catch (AmazonSQSException ex)
+            {
+                logger.LogError(ex,
+                    "AWS SQS error while publishing batch to queue {QueueUrl}. Error Code: {errorCode}",
+                    queueUrl,
+                    ex.ErrorCode
+                );
+                return ReadOnlyCollection<SendMessageBatchResponse>.Empty;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex,
+                    "Unexpected error while publishing batch to queue {QueueUrl}",
+                    queueUrl
+                );
+                return ReadOnlyCollection<SendMessageBatchResponse>.Empty;
+            }
+
+            responses.Add(response);
+
+            if (response.Failed != null && response.Failed.Count > 0)
+            {
+                logger.LogWarning(
+                    "{failedCount} messages failed to publish to queue {QueueUrl}",
+                    response.Failed.Count,
+                    queueUrl
+                );
+            }
         }
+
+        return responses;
     }
 }
